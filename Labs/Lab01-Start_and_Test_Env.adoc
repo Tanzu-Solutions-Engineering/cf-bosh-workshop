@@ -57,11 +57,16 @@ image::../images/bosh_status.png[]
 
 image::../images/pcfdev_download.png[]
 
-. Prerequisites
-  CF CLI https://github.com/cloudfoundry/cli#downloads
-  VirtualBox: 5.0+ https://www.virtualbox.org/
-  Internet connection (or Dnsmasq or Acrylic) required for wildcard DNS resolution
+=== Prerequisites
+----
 
+CF CLI https://github.com/cloudfoundry/cli#downloads
+
+VirtualBox: 5.0+ https://www.virtualbox.org/
+
+Internet connection (or Dnsmasq or Acrylic) required for wildcard DNS resolution
+
+----
 . unzip pcfdev and navigate to the pcfdev folder
 . run cf install-plugin pcfdev-VERSION-PLATFORM on your command line
 . run cf dev start

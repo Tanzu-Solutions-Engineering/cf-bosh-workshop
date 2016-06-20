@@ -18,7 +18,7 @@ resource_pools:
   cloud_properties:
     instance_type: m3.xlarge
     ephemeral_disk: {size: 25_000, type: gp2}
-    availability_zone: us-east-1a # <--- Replace with Availability Zone
+    availability_zone: AZ # <--- Replace with Availability Zone
 
 disk_pools:
 - name: disks
@@ -32,7 +32,7 @@ networks:
   - range: 10.0.0.0/24
     gateway: 10.0.0.1
     dns: [10.0.0.2]
-    cloud_properties: {subnet: subnet-b2065198} # <--- Replace with Subnet ID
+    cloud_properties: {subnet: subnet} # <--- Replace with Subnet ID
 - name: public
   type: vip
 
@@ -57,7 +57,7 @@ jobs:
     static_ips: [10.0.0.6]
     default: [dns, gateway]
   - name: public
-    static_ips: [50.19.200.235] # <--- Replace with Elastic IP
+    static_ips: [0.0.0.0] # <--- Replace with Elastic IP
 
   properties:
     nats:
@@ -84,9 +84,9 @@ jobs:
 
     blobstore:
       provider: s3
-      access_key_id: AKIAJRJN5JLE652TWGJQ # <--- Replace with AWS Access Key ID
-      secret_access_key: hpcv6iTeRFR39qVmWmYzOE+XAi2NuCDxPWLZwdXi # <--- Replace with AWS Secret Key
-      bucket_name: cdaver-bosh-aws-bstore      
+      access_key_id: AWS_ACCESS_KEY_ID # <--- Replace with AWS Access Key ID
+      secret_access_key: AWS_SECRET_ACCESS_KEY # <--- Replace with AWS Secret Key
+      bucket_name: cdaver-bosh-aws-bstore
       director: {user: director, password: director-password}
       agent: {user: agent, password: agent-password}
 
@@ -108,8 +108,8 @@ jobs:
       resurrector_enabled: true
 
     aws: &aws
-      access_key_id: AKIAJRJN5JLE652TWGJQ # <--- Replace with AWS Access Key ID
-      secret_access_key: hpcv6iTeRFR39qVmWmYzOE+XAi2NuCDxPWLZwdXi # <--- Replace with AWS Secret Key
+      access_key_id: AWS_ACCESS_KEY_ID # <--- Replace with AWS Access Key ID
+      secret_access_key: AWS_SECRET_ACCESS_KEY # <--- Replace with AWS Secret Key
       default_key_name: bosh
       default_security_groups: [bosh]
       region: us-east-1  # <--- Replace with Region
@@ -122,12 +122,12 @@ cloud_provider:
   template: {name: aws_cpi, release: bosh-aws-cpi}
 
   ssh_tunnel:
-    host: 50.19.200.235 # <--- Replace with your Elastic IP address
+    host: 0.0.0.0 # <--- Replace with your Elastic IP address
     port: 22
     user: vcap
     private_key: ./bosh.pem # Path relative to this manifest file
 
-  mbus: "https://mbus:mbus-password@50.19.200.235:6868" # <--- Replace with Elastic IP
+  mbus: "https://mbus:mbus-password@0.0.0.0:6868" # <--- Replace with Elastic IP
 
   properties:
     aws: *aws

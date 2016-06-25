@@ -8,62 +8,62 @@ This guide describes how to create and manage an on-demand service broker using 
 
 ==== *Steps*
 Ensure you are targeting your BOSH lite, that was just provisioned.
----
+----
  → bosh target
 
 Current target is https://192.168.50.4:25555 (Bosh Lite Director)
----
+----
 
 ==== *Upload the BOSH lite stemcell*
----
+----
 bosh upload stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent?v=3147
----
+----
 
 ==== *Kafka service release*
 
 Clone the kafka service release
----
+----
 git clone https://github.com/pivotal-cf-experimental/kafka-example-service-release.git
----
+----
 
 Create and Upload the kafka service release on the director
----
+----
 cd kafka-example-service-release
 bosh create release --name kafka-example-service
 bosh upload release
----
+----
 
 ==== *Kafka Service Adapter*
 Clone the kafka service adapter release and run git submodule update --init to bring in the adapter’s dependencies
----
+----
 git clone https://github.com/pivotal-cf-experimental/kafka-example-service-adapter-release.git
 cd kafka-example-service-adapter-release
 git submodule update --init
----
+----
 Create and Upload the kafka example service adapter release on the director
----
+----
 bosh create release --name kafka-example-service-adapter
 bosh upload release
----
+----
 
 ==== *ODB*
 Clone the on demand service broker release
----
+----
 git clone https://github.com/pivotal-cf/on-demand-service-broker-release.git
 cd on-demand-service-broker-release
 git submodule update --init
----
+----
 
 Create and upload the on demand service broker release
----
+----
 bosh create release --name on-demand-service-broker
 bosh upload release
----
+----
 
 ==== *Cloud Config*
 Create a cloud_config.yml for the bosh lite director.
 For example:
----
+----
 vm_types:
 - name: container
   cloud_properties: {}
@@ -87,14 +87,14 @@ compilation:
   network: kafka
   cloud_properties: {}
 
----
+----
 
 Update cloud config
----
+----
 bosh update cloud-config cloud_config.yml
----
+----
 Get BOSH lite director information
----
+----
 bosh status
 Will result in a output like:
 → bosh status
@@ -111,13 +111,13 @@ Director
   dns        disabled
   compiled_package_cache enabled (provider: local)
   snapshots  disabled
----
+----
 Note the director URL and director UUID as they will be used in the next step.
 
 ==== *Release manifest*
 Create a bosh lite manifest for the deployment.
 Please replace REPLACE_WITH_BOSH_LITE_UUID and REPLACE_WITH_BOSH_LITE_IP with information obtained from the previous step, and create a file called deployment_manifest.yml
----
+----
 name: kafka-on-demand-broker
 
 director_uuid: <REPLACE_WITH_BOSH_LITE_UUID>
@@ -200,16 +200,16 @@ update:
   update_watch_time: 30000-180000
   max_in_flight: 4
 
----
+----
 
 ==== *Deploy*
 Deploy using the manifest from the previous step
----
+----
 bosh deployment deployment_manifest.yml
 bosh deploy
----
+----
 Find out the ip address of the broker that was deployed with the instances BOSH command
----
+----
 bosh instances
 Sample output: “` Acting as client ‘admin’ on deployment 'kafka-on-demand-broker’ on 'Bosh Lite Director’
 Director task 147
@@ -217,37 +217,37 @@ Task 147 done
 +————————————————–+———+—–+———–+————+ | Instance | State | AZ | VM Type | IPs | +————————————————–+———+—–+———–+————+ | broker/0 (59231277-d7b8-46bb-8bbb-8154b6bae347)* | running | n/a | container | 10.244.1.2 | +————————————————–+———+—–+———–+————+
 (*) Bootstrap node
 Instances total: 1 ”` Note the IP address of the broker.
----
+----
 
 ==== *Create a service broker*
 Create a service broker on PCF dev and enable access to its service offering
----
+----
 cf create-service-broker kafka-broker broker password http://<REPLACE_WITH_BROKER_IP>:8080
----
+----
 For more details on service brokers see here.
 Enable access to the broker’s service plans:
----
+----
 cf enable-service-access kafka-service-with-odb
----
+----
 See the services offered by the broker in the marketplace:
----
+----
 cf marketplace
----
+----
 Sample output:
----
+----
 “` Getting services from marketplace in org pcfdev-org / space pcfdev-space as admin… OK
 service plans description kafka-service-with-odb small Kafka Service p-mysql 512mb, 1gb MySQL databases on demand p-rabbitmq standard RabbitMQ is a robust and scalable high-performance multi-protocol messaging broker. p-redis shared-vm Redis service to provide a key-value store ”`
----
+----
 Create a service instance using the Kafka on-demand service broker.
----
+----
 cf create-service kafka-service-with-odb small k1
----
+----
 check the status of your service. Initially, it should be create in progress. Eventually, it should be create succeeded.
----
+----
 cf service k1
----
+----
 check the BOSH deployment to see the on demand service provisioned by ODB.
----
+----
 bosh deployments
 Sample output:
 +-------------------------------------------------------+---------------------------------------+--------------------------------------------------+--------------+
@@ -258,5 +258,5 @@ Sample output:
 +-------------------------------------------------------+---------------------------------------+--------------------------------------------------+--------------+
 | service-instance_2715262c-8564-4cd9-b629-0ae99e6aa4b9 | kafka-example-service/0+dev.2         | bosh-warden-boshlite-ubuntu-trusty-go_agent/3147 | latest       |
 +-------------------------------------------------------+---------------------------------------+--------------------------------------------------+--------------+
----
+----
 Note the service instance provisioned with service releases specified in the ODB manifest.

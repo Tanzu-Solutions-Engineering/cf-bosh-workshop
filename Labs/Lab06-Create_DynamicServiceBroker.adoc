@@ -1,4 +1,4 @@
-= Lab05: On-demand Service Broker Documentation
+= Lab06: On-demand Service Broker Documentation
 ==== *Getting started with the On-Demand Service Broker*
 This guide describes how to create and manage an on-demand service broker using PCF Dev and BOSH lite, which are containerised versions of CloudFoundry and BOSH respectively. For this tutorial we will be using the kafka-service-adapter and the a test kafka service release
 
@@ -64,28 +64,33 @@ bosh upload release
 Create a cloud_config.yml for the bosh lite director.
 For example:
 ----
+azs:
+- name: z1
+
 vm_types:
 - name: container
   cloud_properties: {}
+
+disk_pools:
+- name: ten
+  disk_size: 10_000
+  cloud_properties: {type: gp2}
 
 networks:
 - name: kafka
   type: manual
   subnets:
-  - range: 10.244.1.0/24
+  - az: z1
+    range: 10.244.1.0/24
     gateway: 10.244.1.1
     cloud_properties: {}
-
-disk_types:
-- name: ten
-  disk_size: 10_000
-  cloud_properties: {}
 
 compilation:
   workers: 2
   reuse_compilation_vms: true
+  vm_type: container
   network: kafka
-  cloud_properties: {}
+  az: z1
 
 ----
 
@@ -116,7 +121,9 @@ Note the director URL and director UUID as they will be used in the next step.
 
 ==== *Release manifest*
 Create a bosh lite manifest for the deployment.
-Please replace REPLACE_WITH_BOSH_LITE_UUID and REPLACE_WITH_BOSH_LITE_IP with information obtained from the previous step, and create a file called deployment_manifest.yml
+- Provide bosh lite uuid
+- Provide the URL for bosh I.e https://username:password@ip:port
+- create a file called kafka_manifest.yml
 ----
 name: kafka-on-demand-broker
 
@@ -172,7 +179,7 @@ instance_groups:
                 plan_id: 11789210-D743-4C65-9D38-C80B29F4D9C8
                 description: A Kafka deployment with a single instance of each job and persistent disk
                 instance_groups:
-                  - name: kafka_broker
+                  - name: kafka_server
                     vm_type: container
                     instances: 1
                     persistent_disk: ten
@@ -205,7 +212,7 @@ update:
 ==== *Deploy*
 Deploy using the manifest from the previous step
 ----
-bosh deployment deployment_manifest.yml
+bosh deployment kafka_manifest.yml
 bosh deploy
 ----
 Find out the ip address of the broker that was deployed with the instances BOSH command

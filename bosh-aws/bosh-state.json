@@ -1,14 +1,14 @@
 {
     "director_id": "60ebba77-cb4f-4009-4ded-8a16ab77ef63",
     "installation_id": "97ef48f9-7760-499a-6a78-c2c9c2f97696",
-    "current_vm_cid": "i-476315db",
-    "current_stemcell_id": "79385f7f-74b8-47f1-7b15-28ce2f890fe4",
+    "current_vm_cid": "i-10024d8c",
+    "current_stemcell_id": "4c60ee61-20a6-4be0-608a-5691b8f24606",
     "current_disk_id": "a705f4fe-384c-4716-4105-4a56ebd99102",
     "current_release_ids": [
-        "048f530a-fc33-426c-7b1e-14eea9157fa4",
-        "06250931-2f0f-49d1-6f3f-39fec0fa2208"
+        "193d55be-f240-4b45-54f3-35e9cdbf4b94",
+        "e1846456-696e-441c-7af2-f0fccc64861f"
     ],
-    "current_manifest_sha1": "57f48d25d73c8ee2bbbc68399683c2950f3e79dc",
+    "current_manifest_sha1": "0c74352feb420611ed009688d5fe9f3ae6beb96c",
     "disks": [
         {
             "id": "a705f4fe-384c-4716-4105-4a56ebd99102",
@@ -21,20 +21,20 @@
     ],
     "stemcells": [
         {
-            "id": "79385f7f-74b8-47f1-7b15-28ce2f890fe4",
+            "id": "4c60ee61-20a6-4be0-608a-5691b8f24606",
             "name": "bosh-aws-xen-hvm-ubuntu-trusty-go_agent",
-            "version": "3232.4",
-            "cid": "ami-25c62e48 light"
+            "version": "3232.8",
+            "cid": "ami-61ab510c light"
         }
     ],
     "releases": [
         {
-            "id": "048f530a-fc33-426c-7b1e-14eea9157fa4",
+            "id": "193d55be-f240-4b45-54f3-35e9cdbf4b94",
             "name": "bosh",
             "version": "256.10"
         },
         {
-            "id": "06250931-2f0f-49d1-6f3f-39fec0fa2208",
+            "id": "e1846456-696e-441c-7af2-f0fccc64861f",
             "name": "bosh-aws-cpi",
             "version": "53"
         }
